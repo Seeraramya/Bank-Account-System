@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova Bank</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
+<style>
+:root{--bg:#f3f4fb;--panel:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--brand:#6d4aff;--brand2:#2563eb;--good:#16a34a;--bad:#dc2626;--shadow:0 10px 30px rgba(15,23,42,.08)}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1020;--panel:#141b2f;--text:#e8ecf8;--muted:#95a2c0;--line:#27314c;--shadow:0 10px 30px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+/* layout: picture on the left, app on the right */
+.wrap{max-width:1360px;margin:0 auto;padding:24px 18px 70px;display:grid;grid-template-columns:380px minmax(0,1fr);column-gap:28px;align-items:start}
+.wrap>*{grid-column:2}
+.wrap>.side{grid-column:1;grid-row:1/span 20}
+.side{position:sticky;top:24px;height:calc(100vh - 48px);min-height:520px;border-radius:24px;overflow:hidden;color:#fff;box-shadow:var(--shadow);
+  background:radial-gradient(circle at 80% 8%,rgba(255,255,255,.22),transparent 45%),linear-gradient(165deg,#1d4ed8 0%,#4f46e5 55%,#6d4aff 100%);
+  display:flex;flex-direction:column;justify-content:space-between}
+.side-text{padding:30px 28px 0}
+.side-text h2{margin:0;font-size:1.7rem;letter-spacing:-.02em;line-height:1.15}
+.side-text p{margin:10px 0 0;opacity:.85;font-size:.95rem}
+.side svg{width:100%;height:auto;display:block}
+.float{animation:bob 4s ease-in-out infinite}.float.b{animation-delay:-1.3s}.float.c{animation-delay:-2.6s}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@media(max-width:980px){.wrap{display:block;max-width:1060px}.side{display:none}}
+.hero{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff;border-radius:24px;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;box-shadow:var(--shadow)}
+.hero h1{margin:0;font-size:1.9rem;letter-spacing:-.02em}
+.hero p{margin:4px 0 0;opacity:.85}
+.pill{background:rgba(255,255,255,.18);border-radius:999px;padding:8px 16px;font-size:.85rem;backdrop-filter:blur(6px)}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:22px 0}
+nav button{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 16px;border-radius:12px;font:inherit;font-weight:600;cursor:pointer;transition:.15s}
+nav button:hover{transform:translateY(-1px)}
+nav button.active{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff;border-color:transparent}
+.view{display:none}.view.active{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.grid{display:grid;gap:16px}
+.stats{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.cards{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));margin-top:6px}
+.tile,.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow)}
+.tile .label{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+.tile .value{font-size:1.7rem;font-weight:700;margin-top:4px}
+h2.sec{margin:26px 0 12px;font-size:1.15rem}
+.card{background:linear-gradient(135deg,#0f172a,#26324f);color:#f8fafc;border-radius:18px;padding:20px 22px;box-shadow:var(--shadow)}
+.card .top{display:flex;justify-content:space-between;font-size:.72rem;opacity:.7;letter-spacing:.08em;text-transform:uppercase}
+.card .name{margin-top:16px;font-size:1.05rem;overflow-wrap:anywhere}
+.card .bal{margin-top:4px;font-size:1.9rem;font-weight:700}
+.bars .row{display:grid;grid-template-columns:150px 1fr 120px;gap:10px;align-items:center;margin:10px 0;font-size:.9rem}
+.bars .track{background:var(--line);border-radius:999px;height:12px;overflow:hidden}
+.bars .fill{height:100%;background:linear-gradient(90deg,var(--brand2),var(--brand));border-radius:999px;transition:width .5s}
+.bars .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bars .am{text-align:right;font-weight:600}
+form{max-width:460px;display:grid;gap:14px}
+label{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-weight:600}
+input,select{font:inherit;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);outline:none}
+input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(109,74,255,.2)}
+.btn{border:0;border-radius:12px;padding:13px 18px;font:inherit;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--brand2),var(--brand))}
+.btn:hover{filter:brightness(1.08)}.btn.ghost{background:var(--panel);color:var(--text);border:1px solid var(--line)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg label{margin:0;display:block}.seg input{display:none}
+.seg span{display:block;text-align:center;padding:9px;border-radius:9px;cursor:pointer;color:var(--text)}
+.seg input:checked+span{background:var(--panel);box-shadow:0 1px 6px rgba(0,0,0,.15);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+td.cr{color:var(--good);font-weight:700}td.db{color:var(--bad);font-weight:700}
+.scroll{overflow-x:auto}
+.empty{color:var(--muted);padding:26px;text-align:center;border:1px dashed var(--line);border-radius:16px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#0f172a;color:#fff;padding:12px 20px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;box-shadow:var(--shadow);max-width:90vw}
+#toast.show{opacity:1;transform:translate(-50%,0)}#toast.err{background:var(--bad)}#toast.okk{background:var(--good)}
+@media(max-width:600px){.bars .row{grid-template-columns:90px 1fr 90px}.hero{padding:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <aside class="side" aria-hidden="true">
+    <div class="side-text">
+      <h2>Banking, made simple.</h2>
+      <p>Safe, fast and always in your hands.</p>
+    </div>
+    <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="200" cy="170" r="150" fill="#fff" opacity=".07"/>
+      <circle cx="200" cy="170" r="100" fill="#fff" opacity=".07"/>
+      <!-- floating coins -->
+      <g class="float"><circle cx="338" cy="82" r="19" fill="#fbbf24"/><circle cx="338" cy="82" r="14" fill="none" stroke="#fde68a" stroke-width="2"/><text x="338" y="89" text-anchor="middle" font-size="19" font-weight="700" fill="#b45309">₹</text></g>
+      <g class="float b"><circle cx="62" cy="62" r="15" fill="#fbbf24"/><circle cx="62" cy="62" r="11" fill="none" stroke="#fde68a" stroke-width="2"/><text x="62" y="68" text-anchor="middle" font-size="15" font-weight="700" fill="#b45309">₹</text></g>
+      <g class="float c"><circle cx="300" cy="28" r="11" fill="#fbbf24"/><text x="300" y="33" text-anchor="middle" font-size="12" font-weight="700" fill="#b45309">₹</text></g>
+      <!-- bank building -->
+      <polygon points="40,172 200,86 360,172" fill="#f8fafc"/>
+      <polygon points="88,164 200,104 312,164" fill="#dbe4ff"/>
+      <circle cx="200" cy="141" r="11" fill="#6d4aff"/>
+      <rect x="40" y="172" width="320" height="18" rx="2" fill="#e2e8f0"/>
+      <g fill="#f8fafc">
+        <rect x="58" y="190" width="24" height="128"/><rect x="110" y="190" width="24" height="128"/><rect x="162" y="190" width="24" height="128"/>
+        <rect x="214" y="190" width="24" height="128"/><rect x="266" y="190" width="24" height="128"/><rect x="318" y="190" width="24" height="128"/>
+      </g>
+      <g fill="#cbd5e1" opacity=".7">
+        <rect x="70" y="190" width="4" height="128"/><rect x="122" y="190" width="4" height="128"/><rect x="174" y="190" width="4" height="128"/>
+        <rect x="226" y="190" width="4" height="128"/><rect x="278" y="190" width="4" height="128"/><rect x="330" y="190" width="4" height="128"/>
+      </g>
+      <path d="M188 318V262a12 12 0 0 1 24 0V318Z" fill="#312e81"/>
+      <rect x="40" y="318" width="320" height="14" fill="#cbd5e1"/>
+      <rect x="30" y="332" width="340" height="14" fill="#e2e8f0"/>
+      <rect x="20" y="346" width="360" height="14" fill="#f1f5f9"/>
+      <rect x="0" y="360" width="400" height="60" fill="#0f172a" opacity=".25"/>
+      <!-- coin stacks -->
+      <g fill="#f59e0b" stroke="#fcd34d" stroke-width="2">
+        <ellipse cx="70" cy="404" rx="30" ry="9"/><ellipse cx="70" cy="394" rx="30" ry="9"/><ellipse cx="70" cy="384" rx="30" ry="9"/><ellipse cx="70" cy="374" rx="30" ry="9" fill="#fbbf24"/>
+        <ellipse cx="332" cy="404" rx="30" ry="9"/><ellipse cx="332" cy="394" rx="30" ry="9"/><ellipse cx="332" cy="384" rx="30" ry="9" fill="#fbbf24"/>
+      </g>
+      <text x="70" y="378" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">₹</text>
+      <text x="332" y="388" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">₹</text>
+    </svg>
+  </aside>
+
+  <header class="hero">
+    <div><h1>🏦 Nova Bank</h1><p>Served by a pure C++ backend</p></div>
+    <div class="pill" id="clock"></div>
+  </header>
+
+  <nav id="nav">
+    <button data-view="dashboard" class="active">Dashboard</button>
+    <button data-view="open">Open account</button>
+    <button data-view="money">Deposit / Withdraw</button>
+    <button data-view="transfer">Transfer</button>
+    <button data-view="statement">Statement</button>
+  </nav>
+
+  <section class="view active" id="dashboard">
+    <div class="grid stats">
+      <div class="tile"><div class="label">Total holdings</div><div class="value" id="sTotal">-</div></div>
+      <div class="tile"><div class="label">Accounts</div><div class="value" id="sCount">-</div></div>
+      <div class="tile"><div class="label">Largest balance</div><div class="value" id="sMax">-</div></div>
+    </div>
+    <h2 class="sec">Accounts</h2>
+    <div class="grid cards" id="cards"></div>
+    <h2 class="sec">Balance comparison</h2>
+    <div class="panel bars" id="bars"></div>
+  </section>
+
+  <section class="view" id="open">
+    <div class="panel">
+      <form id="fOpen">
+        <label>Account holder name<input name="name" maxlength="60" required placeholder="e.g. Asha Rao"></label>
+        <label>Opening deposit (₹)<input name="initial" inputmode="decimal" placeholder="0.00"></label>
+        <button class="btn">Create account</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="view" id="money">
+    <div class="panel">
+      <form id="fMoney">
+        <label>Account<select name="id" class="acc" required></select></label>
+        <div class="seg">
+          <label><input type="radio" name="kind" value="deposit" checked><span>Deposit</span></label>
+          <label><input type="radio" name="kind" value="withdraw"><span>Withdraw</span></label>
+        </div>
+        <label>Amount (₹)<input name="amount" inputmode="decimal" placeholder="500.00" required></label>
+        <button class="btn">Confirm</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="view" id="transfer">
+    <div class="panel">
+      <form id="fTransfer">
+        <label>From<select name="from" class="acc" required></select></label>
+        <label>To<select name="to" class="acc" required></select></label>
+        <label>Amount (₹)<input name="amount" inputmode="decimal" placeholder="500.00" required></label>
+        <button class="btn">Send money</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="view" id="statement">
+    <div class="panel" style="margin-bottom:16px">
+      <form id="fStatement" onsubmit="return false"><label>Account<select id="stAcc" class="acc"></select></label></form>
+    </div>
+    <div id="stCard"></div>
+    <div class="panel scroll" id="stTable" style="margin-top:16px"></div>
+    <p><button class="btn ghost" id="csv" type="button">Download CSV</button></p>
+  </section>
+</div>
+<div id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const fmt = c => '₹' + (c / 100).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+let accounts = [], lastTxns = [];
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error);
+  return j.data;
+}
+const post = (path, obj) => api(path, {
+  method: 'POST',
+  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  body: new URLSearchParams(obj)
+});
+
+let toastTimer;
+function toast(msg, kind) {
+  const t = $('#toast');
+  t.textContent = msg; t.className = 'show ' + (kind || '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = '', 3200);
+}
+
+function cardHtml(a) {
+  return `<div class="card"><div class="top"><span>Account #${a.id}</span><span>💳</span></div>
+    <div class="name">${esc(a.name)}</div><div class="bal">${fmt(a.balance_cents)}</div></div>`;
+}
+
+function render() {
+  const total = accounts.reduce((s, a) => s + a.balance_cents, 0);
+  const max = Math.max(0, ...accounts.map(a => a.balance_cents));
+  $('#sTotal').textContent = fmt(total);
+  $('#sCount').textContent = accounts.length;
+  $('#sMax').textContent = fmt(max);
+  $('#cards').innerHTML = accounts.length ? accounts.map(cardHtml).join('')
+    : '<div class="empty" style="grid-column:1/-1">No accounts yet. Open your first one from the menu.</div>';
+  $('#bars').innerHTML = accounts.length ? accounts.map(a => `<div class="row">
+      <div class="nm">#${a.id} ${esc(a.name)}</div>
+      <div class="track"><div class="fill" style="width:${max ? Math.max(2, a.balance_cents / max * 100) : 0}%"></div></div>
+      <div class="am">${fmt(a.balance_cents)}</div></div>`).join('') : '<div class="empty">Nothing to compare yet.</div>';
+  document.querySelectorAll('select.acc').forEach(sel => {
+    const keep = sel.value;
+    sel.innerHTML = accounts.map(a => `<option value="${a.id}">#${a.id} · ${esc(a.name)} (${fmt(a.balance_cents)})</option>`).join('');
+    if (keep && accounts.some(a => String(a.id) === keep)) sel.value = keep;
+  });
+}
+
+async function refresh() {
+  try { accounts = await api('/api/accounts'); render(); }
+  catch (e) { toast('Cannot reach the server', 'err'); }
+}
+
+async function loadStatement() {
+  const id = $('#stAcc').value;
+  if (!id) { $('#stCard').innerHTML = ''; $('#stTable').innerHTML = '<div class="empty">Open an account first.</div>'; return; }
+  try {
+    lastTxns = await api(`/api/accounts/${id}/transactions`);
+    const a = accounts.find(x => String(x.id) === id);
+    $('#stCard').innerHTML = a ? `<div class="grid cards">${cardHtml(a)}</div>` : '';
+    const credit = new Set(['DEPOSIT', 'TRANSFER_IN']);
+    const names = {DEPOSIT:'Deposit', WITHDRAWAL:'Withdrawal', TRANSFER_IN:'Transfer in', TRANSFER_OUT:'Transfer out'};
+    $('#stTable').innerHTML = lastTxns.length ? `<table><thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Balance</th><th>Note</th></tr></thead><tbody>` +
+      lastTxns.map(t => `<tr><td>${new Date(t.ts * 1000).toLocaleString('en-IN', {dateStyle:'medium', timeStyle:'short'})}</td>
+        <td>${names[t.type] || esc(t.type)}</td>
+        <td class="${credit.has(t.type) ? 'cr' : 'db'}">${credit.has(t.type) ? '+' : '-'}${fmt(t.amount_cents)}</td>
+        <td>${fmt(t.balance_after_cents)}</td><td>${esc(t.note)}</td></tr>`).join('') + '</tbody></table>'
+      : '<div class="empty">No transactions yet.</div>';
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+// navigation
+document.querySelectorAll('#nav button').forEach(b => b.onclick = async () => {
+  document.querySelectorAll('#nav button').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === b.dataset.view));
+  await refresh();
+  if (b.dataset.view === 'statement') loadStatement();
+});
+$('#stAcc').onchange = loadStatement;
+
+// forms
+async function submit(form, fn, msg) {
+  try { await fn(Object.fromEntries(new FormData(form))); form.reset(); toast(msg, 'okk'); await refresh(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+$('#fOpen').onsubmit = e => { e.preventDefault(); submit(e.target, d => post('/api/accounts', d), 'Account created'); };
+$('#fMoney').onsubmit = e => {
+  e.preventDefault();
+  const kind = new FormData(e.target).get('kind');
+  submit(e.target, d => post('/api/' + kind, {id: d.id, amount: d.amount}), kind === 'deposit' ? 'Deposit successful' : 'Withdrawal successful');
+};
+$('#fTransfer').onsubmit = e => { e.preventDefault(); submit(e.target, d => post('/api/transfer', d), 'Transfer complete'); };
+
+$('#csv').onclick = () => {
+  const rows = [['Date','Type','Amount','Balance after','Note'],
+    ...lastTxns.map(t => [new Date(t.ts * 1000).toISOString(), t.type, (t.amount_cents/100).toFixed(2), (t.balance_after_cents/100).toFixed(2), t.note])];
+  const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
+  a.download = 'statement.csv'; a.click();
+};
+
+setInterval(() => $('#clock').textContent = new Date().toLocaleString('en-IN', {dateStyle:'medium', timeStyle:'short'}), 1000);
+$('#clock').textContent = new Date().toLocaleString('en-IN', {dateStyle:'medium', timeStyle:'short'});
+refresh();
+</script>
+</body>
+</html>

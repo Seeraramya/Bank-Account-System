@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.15)
+project(NovaBank CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(nova_bank main.cpp)
+
+find_package(Threads REQUIRED)
+target_link_libraries(nova_bank PRIVATE Threads::Threads)
+if(WIN32)
+  target_link_libraries(nova_bank PRIVATE ws2_32)
+endif()
+
+# Put index.html beside the executable so "./nova_bank" can serve it from anywhere.
+add_custom_command(TARGET nova_bank POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          ${CMAKE_SOURCE_DIR}/index.html $<TARGET_FILE_DIR:nova_bank>/index.html)
